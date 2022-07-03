@@ -2,7 +2,10 @@ import json
 import boto3
 import base64
 
-# Fill this in with the name of your deployed model
+# this function was rewritten after encountering the same problem as at https://knowledge.udacity.com/questions/753077
+# and using the knowledge article provided as answer as an input into how to complete this
+
+
 ENDPOINT = 'image-classification-2022-07-03-02-06-14-908'
 
 runtime = boto3.client('runtime.sagemaker')
