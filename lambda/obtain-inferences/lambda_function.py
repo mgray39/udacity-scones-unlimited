@@ -1,33 +1,27 @@
 import json
-import sagemaker
+import boto3
 import base64
-from sagemaker.serializers import IdentitySerializer
-
-session = sagemaker.Session()
 
 # Fill this in with the name of your deployed model
 ENDPOINT = 'image-classification-2022-07-03-02-06-14-908'
 
+runtime = boto3.client('runtime.sagemaker')
 
 def lambda_handler(event, context):
 
     # Decode the image data
     image = base64.b64decode(event['image_data'])
+    
+    response = runtime.invoke_endpoint(EndpointName = 'image-classification-2022-07-03-02-06-14-908',
+                                   ContentType='application/x-image',
+                                   Body=image)
+    
+    result = json.loads(response['Body'].read().decode())
 
-    # Instantiate a Predictor
-    predictor = sagemaker.Predictor(
-        endpoint_name=endpoint,
-        sagemaker_session=session,
-        )
-
-    # For this model the IdentitySerializer needs to be "image/png"
-    predictor.serializer = IdentitySerializer("image/png")
-
-    # Make a prediction:
-    inferences = predictor.predict(image)
 
     # We return the data back to the Step Function    
-    event["inferences"] = inferences.decode('utf-8')
+    event["inferences"] = result
+    
     return {
         'statusCode': 200,
         'body': json.dumps(event)
