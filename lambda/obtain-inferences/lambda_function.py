@@ -15,7 +15,7 @@ def lambda_handler(event, context):
     # Decode the image data
     image = base64.b64decode(event['image_data'])
     
-    response = runtime.invoke_endpoint(EndpointName = 'image-classification-2022-07-03-02-06-14-908',
+    response = runtime.invoke_endpoint(EndpointName = ENDPOINT,
                                    ContentType='application/x-image',
                                    Body=image)
     
